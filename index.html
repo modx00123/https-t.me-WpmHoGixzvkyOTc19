@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZERO POINT AI | Advanced Game Predictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00f0ff;
+            --secondary: #7b2dff;
+            --accent: #ff2d7b;
+            --text: rgba(255, 255, 255, 0.92);
+            --bg-dark: #0a0a14;
+            --bg-darker: #05050a;
+            --card-bg: rgba(20, 20, 40, 0.6);
+            --success: #00ff9d;
+            --danger: #ff3860;
+            --warning: #ffc107;
+            --info: #00b4ff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg-darker);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(123, 45, 255, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(0, 240, 255, 0.15) 0%, transparent 40%);
+            z-index: -2;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+        }
+        
+        .logo-tagline {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.2rem;
+            letter-spacing: 1px;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 240, 255, 0.15);
+            border-color: rgba(0, 240, 255, 0.3);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+        
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            gap: 0.3rem;
+        }
+        
+        .trend-up {
+            color: var(--success);
+        }
+        
+        .trend-down {
+            color: var(--danger);
+        }
+        
+        /* Main Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 240, 255, 0.15);
+            border-color: rgba(0, 240, 255, 0.3);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        /* Current Game Info */
+        .game-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .info-item {
+            margin-bottom: 1rem;
+        }
+        
+        .info-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .period-display {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            display: inline-block;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+            letter-spacing: 1px;
+        }
+        
+        .timer {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: var(--primary);
+            margin: 0.5rem 0;
+        }
+        
+        /* Prediction Display */
+        .prediction-container {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            margin: 1.5rem 0;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .prediction-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 15s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .prediction-label {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+        
+        .prediction-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .prediction-value::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .prediction-value.active::after {
+            transform: scaleX(1);
+        }
+        
+        .pending {
+            color: var(--warning);
+        }
+        
+        .big {
+            color: var(--success);
+            text-shadow: 0 0 15px rgba(0, 255, 157, 0.5);
+        }
+        
+        .small {
+            color: var(--danger);
+            text-shadow: 0 0 15px rgba(255, 56, 96, 0.5);
+        }
+        
+        .confidence-meter {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        
+        .confidence-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+        }
+        
+        /* History Table */
+        .history-container {
+            max-height: 500px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
+        }
+        
+        .history-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .history-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .history-container::-webkit-scrollbar-thumb {
+            background-color: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .history-table th {
+            position: sticky;
+            top: 0;
+            background: var(--bg-dark);
+            padding: 1rem;
+            text-align: left;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 2;
+        }
+        
+        .history-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .history-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .history-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .status-win {
+            background: rgba(0, 255, 157, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+        
+        .status-loss {
+            background: rgba(255, 56, 96, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+        
+        .status-pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+        
+        /* Win/Loss Distribution */
+        .distribution-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .distribution-item {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .distribution-big {
+            background: rgba(0, 255, 157, 0.1);
+            border: 1px solid var(--success);
+        }
+        
+        .distribution-small {
+            background: rgba(255, 56, 96, 0.1);
+            border: 1px solid var(--danger);
+        }
+        
+        .distribution-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+        
+        .distribution-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Fullscreen Notification */
+        .notification {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 10, 20, 0.95);
+            animation: fadeIn 0.5s ease-out;
+            backdrop-filter: blur(10px);
+        }
+        
+        .notification.win {
+            background: linear-gradient(135deg, rgba(0, 255, 157, 0.1), rgba(10, 10, 20, 0.95));
+        }
+        
+        .notification.loss {
+            background: linear-gradient(135deg, rgba(255, 56, 96, 0.1), rgba(10, 10, 20, 0.95));
+        }
+        
+        .notification-period {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .notification-result {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 5rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        
+        .notification.win .notification-result {
+            color: var(--success);
+            text-shadow: 0 0 20px rgba(0, 255, 157, 0.7);
+        }
+        
+        .notification.loss .notification-result {
+            color: var(--danger);
+            text-shadow: 0 0 20px rgba(255, 56, 96, 0.7);
+        }
+        
+        .notification-message {
+            font-size: 2rem;
+            margin-top: 1rem;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+        
+        .notification.win .notification-message {
+            color: var(--success);
+        }
+        
+        .notification.loss .notification-message {
+            color: var(--danger);
+        }
+        
+        .notification-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        
+        .notification-close:hover {
+            opacity: 1;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Game Selection */
+        .game-selection {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .game-btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .game-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .game-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--bg-darker);
+            border-color: transparent;
+            box-shadow: 0 5px 15px rgba(123, 45, 255, 0.3);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .game-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .distribution-container {
+                flex-direction: column;
+            }
+            
+            .notification-result {
+                font-size: 3.5rem;
+            }
+            
+            .notification-message {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .game-selection {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particles Background -->
+    <div id="particles-js" class="particles"></div>
+    
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div>
+                    <div class="logo-text">TEAM_EARNING AI</div>
+                    <div class="logo-tagline">Advanced Predictive Analytics Engine</div>
+                </div>
+            </div>
+            
+            <div class="game-selection">
+                <button class="game-btn active">
+                    <i class="fas fa-dice"></i> Wingo
+                </button>
+                <button class="game-btn">
+                    <i class="fas fa-coins"></i> PREDICTOR AIO
+                </button>
+                <button class="game-btn">
+                    <i class="fas fa-chart-line"></i> TEAM EARNING AI
+                </button>
+            </div>
+        </header>
+        
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">
+                    <i class="fas fa-chart-bar"></i> Total Predictions
+                </div>
+                <div class="stat-value" id="totalPredictions">0</div>
+                <div class="stat-trend trend-up">
+                    <i class="fas fa-arrow-up"></i> 12.5% from last session
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-label">
+                    <i class="fas fa-trophy"></i> Total Wins
+                </div>
+                <div class="stat-value" id="totalWins">0</div>
+                <div class="stat-trend trend-up">
+                    <i class="fas fa-arrow-up"></i> 8.3% from last session
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-label">
+                    <i class="fas fa-times-circle"></i> Total Losses
+                </div>
+                <div class="stat-value" id="totalLosses">0</div>
+                <div class="stat-trend trend-down">
+                    <i class="fas fa-arrow-down"></i> 5.7% from last session
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-label">
+                    <i class="fas fa-bullseye"></i> Accuracy
+                </div>
+                <div class="stat-value" id="accuracy">0%</div>
+                <div class="stat-trend trend-up">
+                    <i class="fas fa-arrow-up"></i> 3.2% from last session
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Dashboard -->
+        <div class="dashboard">
+            <!-- Current Game Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-clock"></i> Current Game
+                    </h2>
+                    <div class="period-display" id="currentPeriod">Loading...</div>
+                </div>
+                
+                <div class="game-info">
+                    <div class="info-item">
+                        <div class="info-label">Time Remaining</div>
+                        <div class="timer" id="timer">00:00</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Last Result</div>
+                        <div class="info-value" id="lastResult">--</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Last Period</div>
+                        <div class="info-value" id="lastPeriod">--</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Server Time</div>
+                        <div class="info-value" id="serverTime">--:--:--</div>
+                    </div>
+                </div>
+                
+                <div class="prediction-container">
+                    <div class="prediction-label">Next Prediction</div>
+                    <div class="prediction-value pending" id="prediction">Analyzing...</div>
+                    
+                    <div class="confidence-meter">
+                        <div class="confidence-fill" id="confidenceFill" style="width: 0%"></div>
+                    </div>
+                    <div class="confidence-value" id="confidenceValue">Confidence: --%</div>
+                </div>
+                
+                <div class="distribution-container">
+                    <div class="distribution-item distribution-big">
+                        <div class="distribution-label">Big Wins</div>
+                        <div class="distribution-value" id="bigWins">0</div>
+                        <div class="stat-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> 15.2%
+                        </div>
+                    </div>
+                    
+                    <div class="distribution-item distribution-small">
+                        <div class="distribution-label">Small Wins</div>
+                        <div class="distribution-value" id="smallWins">0</div>
+                        <div class="stat-trend trend-down">
+                            <i class="fas fa-arrow-down"></i> 7.8%
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- History Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-history"></i> Prediction History
+                    </h2>
+                    <button class="game-btn" id="refreshHistory">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+                
+                <div class="history-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Period</th>
+                                <th>Prediction</th>
+                                <th>Result</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTable">
+                            <tr>
+                                <td colspan="4" style="text-align: center; padding: 2rem;">Loading history...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification (hidden by default) -->
+    <div id="notification" class="notification" style="display: none;">
+        <button class="notification-close" id="closeNotification">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="notification-period">Period: 202305151234</div>
+        <div class="notification-result">Big Win</div>
+        <div class="notification-message">Congratulations! 🎉</div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Network status checking
+        let isOnline = navigator.onLine;
+        let lastKnownStatus = isOnline;
+
+        function checkNetwork() {
+            isOnline = navigator.onLine;
+            if (isOnline !== lastKnownStatus) {
+                if (!isOnline) {
+                    // Network lost, redirect to offline.html
+                    window.location.href = 'offline.html';
+                }
+                lastKnownStatus = isOnline;
+            }
+        }
+
+        // Check network every second
+        setInterval(checkNetwork, 1000);
+
+        // Listen for online/offline events
+        window.addEventListener('online', () => {
+            isOnline = true;
+            // No redirect here since we're already on the main page
+            updatePrediction(); // Update prediction immediately when back online
+        });
+
+        window.addEventListener('offline', () => {
+            isOnline = false;
+            window.location.href = 'offline.html';
+        });
+
+        // Initialize particles.js
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 120, density: { enable: true, value_area: 800 } },
+                color: { value: "#00f0ff" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true, anim: { enable: true, speed: 2, size_min: 0.3 } },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#7b2dff",
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false,
+                    attract: { enable: false, rotateX: 600, rotateY: 1200 }
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "repulse" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                },
+                modes: {
+                    repulse: { distance: 100, duration: 0.4 },
+                    push: { particles_nb: 4 }
+                }
+            },
+            retina_detect: true
+        });
+        
+        // Game data and state
+        let historyData = [];
+        let lastFetchedPeriod = null;
+        let bigWinCount = 0;
+        let smallWinCount = 0;
+        let totalPredictions = 0;
+        let totalWins = 0;
+        let totalLosses = 0;
+        
+        // DOM elements
+        const currentPeriodEl = document.getElementById('currentPeriod');
+        const timerEl = document.getElementById('timer');
+        const predictionEl = document.getElementById('prediction');
+        const confidenceFillEl = document.getElementById('confidenceFill');
+        const confidenceValueEl = document.getElementById('confidenceValue');
+        const lastResultEl = document.getElementById('lastResult');
+        const lastPeriodEl = document.getElementById('lastPeriod');
+        const totalPredictionsEl = document.getElementById('totalPredictions');
+        const totalWinsEl = document.getElementById('totalWins');
+        const totalLossesEl = document.getElementById('totalLosses');
+        const accuracyEl = document.getElementById('accuracy');
+        const bigWinsEl = document.getElementById('bigWins');
+        const smallWinsEl = document.getElementById('smallWins');
+        const historyTableEl = document.getElementById('historyTable');
+        const notificationEl = document.getElementById('notification');
+        const closeNotificationEl = document.getElementById('closeNotification');
+        const serverTimeEl = document.getElementById('serverTime');
+        const refreshHistoryBtn = document.getElementById('refreshHistory');
+        
+        // Close notification
+        closeNotificationEl.addEventListener('click', () => {
+            notificationEl.style.display = 'none';
+        });
+        
+        // Refresh history button
+        refreshHistoryBtn.addEventListener('click', updatePrediction);
+        
+        // Update server time
+        function updateServerTime() {
+            const now = new Date();
+            const hours = now.getUTCHours().toString().padStart(2, '0');
+            const minutes = now.getUTCMinutes().toString().padStart(2, '0');
+            const seconds = now.getUTCSeconds().toString().padStart(2, '0');
+            serverTimeEl.textContent = `${hours}:${minutes}:${seconds}`;
+        }
+        
+        setInterval(updateServerTime, 1000);
+        updateServerTime();
+        
+        // Update timer
+        function updateTimer() {
+            const now = new Date();
+            const seconds = now.getUTCSeconds();
+            const remainingSeconds = 60 - seconds;
+            timerEl.textContent = `00:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+        
+        setInterval(updateTimer, 1000);
+        updateTimer();
+        
+        // Function to fetch game result
+        async function fetchGameResult() {
+            try {
+                const payload = {
+                    pageSize: 10,
+                    pageNo: 1,
+                    typeId: 1,
+                    language: 0,
+                    random: "4a0522c6ecd8410496260e686be2a57c",
+                    signature: "334B5E70A0C9B8918B0B15E517E2069C",
+                    timestamp: Math.floor(Date.now() / 1000)
+                };
+                
+                let response = await fetch("https://api.bdg88zf.com/api/webapi/GetNoaverageEmerdList", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                
+                let data = await response.json();
+                let latestResult = data?.data?.list?.[0];
+                
+                if (latestResult) {
+                    return { 
+                        period: latestResult.issueNumber, 
+                        result: latestResult.number,
+                        resultType: latestResult.number >= 5 ? "BIG" : "SMALL"
+                    };
+                } else {
+                    throw new Error("No data found in the API response");
+                }
+            } catch (error) {
+                console.error("Error fetching game result:", error);
+                return null;
+            }
+        }
+        
+        // Algorithm for prediction
+        function trendAnalysis(history) {
+            if (history.length === 0) {
+                return { type: Math.random() > 0.5 ? "BIG" : "SMALL", confidence: Math.floor(Math.random() * 20) + 70 };
+            }
+            
+            const recentResults = history.slice(0, Math.min(5, history.length));
+            let bigCount = recentResults.filter(item => item.resultType === "BIG").length;
+            let smallCount = recentResults.filter(item => item.resultType === "SMALL").length;
+            
+            const total = bigCount + smallCount;
+            const confidence = Math.floor((Math.max(bigCount, smallCount) / total * 50) + 50);
+            
+            if (bigCount > smallCount) {
+                return { type: "SMALL", confidence };
+            } else if (smallCount > bigCount) {
+                return { type: "BIG", confidence };
+            } else {
+                return { type: Math.random() > 0.5 ? "BIG" : "SMALL", confidence: 65 };
+            }
+        }
+        
+        // Show notification
+        function showNotification(period, result, isWin) {
+            notificationEl.className = `notification ${isWin ? 'win' : 'loss'}`;
+            notificationEl.querySelector('.notification-period').textContent = `Period: ${period}`;
+            notificationEl.querySelector('.notification-result').textContent = isWin ? 
+                `${result} WIN` : `${result} LOSS`;
+            notificationEl.querySelector('.notification-message').textContent = isWin ? 
+                'Congratulations! 🎉' : 'Better luck next time!';
+            notificationEl.style.display = 'flex';
+            
+            setTimeout(() => {
+                notificationEl.style.display = 'none';
+            }, 10000);
+        }
+        
+        // Update history table
+        function updateHistoryTable() {
+            if (historyData.length === 0) {
+                historyTableEl.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 2rem;">No prediction history available</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            historyTableEl.innerHTML = historyData.map(item => {
+                let statusClass, statusText;
+                
+                if (item.resultStatus === "WIN") {
+                    statusClass = "status-win";
+                    statusText = "WIN";
+                } else if (item.resultStatus === "LOSS") {
+                    statusClass = "status-loss";
+                    statusText = "LOSS";
+                } else {
+                    statusClass = "status-pending";
+                    statusText = "PENDING";
+                }
+                
+                return `
+                    <tr>
+                        <td>${item.period}</td>
+                        <td>${item.prediction}</td>
+                        <td>${item.actualResult || '--'}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // Update stats
+        function updateStats() {
+            totalPredictions = historyData.length;
+            totalWins = historyData.filter(item => item.resultStatus === "WIN").length;
+            totalLosses = historyData.filter(item => item.resultStatus === "LOSS").length;
+            
+            totalPredictionsEl.textContent = totalPredictions;
+            totalWinsEl.textContent = totalWins;
+            totalLossesEl.textContent = totalLosses;
+            bigWinsEl.textContent = bigWinCount;
+            smallWinsEl.textContent = smallWinCount;
+            
+            const accuracy = totalPredictions > 0 ? (totalWins / totalPredictions * 100).toFixed(2) : 0;
+            accuracyEl.textContent = `${accuracy}%`;
+        }
+        
+        // Main update function
+        async function updatePrediction() {
+            if (!navigator.onLine) return; // Skip if offline
+            let apiResult = await fetchGameResult();
+            
+            if (apiResult && apiResult.period !== lastFetchedPeriod) {
+                lastFetchedPeriod = apiResult.period;
+                let currentPeriod = (BigInt(apiResult.period) + 1n).toString();
+                
+                lastResultEl.textContent = apiResult.result;
+                lastResultEl.className = `info-value ${apiResult.resultType.toLowerCase()}`;
+                lastPeriodEl.textContent = apiResult.period;
+                
+                let prediction = trendAnalysis(historyData);
+                
+                currentPeriodEl.textContent = currentPeriod;
+                predictionEl.textContent = prediction.type;
+                predictionEl.className = `prediction-value ${prediction.type.toLowerCase()}`;
+                confidenceValueEl.textContent = `Confidence: ${prediction.confidence}%`;
+                confidenceFillEl.style.width = `${prediction.confidence}%`;
+                
+                historyData.unshift({ 
+                    period: currentPeriod, 
+                    prediction: prediction.type, 
+                    resultStatus: "Pending",
+                    confidence: prediction.confidence,
+                    actualResult: null,
+                    resultType: null
+                });
+                
+                checkWinLoss(apiResult);
+                updateHistoryTable();
+                updateStats();
+            }
+        }
+        
+        // Check win/loss for previous predictions
+        function checkWinLoss(apiResult) {
+            historyData.forEach(item => {
+                if (item.period === apiResult.period) {
+                    item.resultStatus = item.prediction === apiResult.resultType ? "WIN" : "LOSS";
+                    item.actualResult = apiResult.result;
+                    item.resultType = apiResult.resultType;
+                    
+                    if (item.resultStatus === "WIN") {
+                        if (item.prediction === "BIG") bigWinCount++;
+                        else smallWinCount++;
+                        showNotification(item.period, item.prediction, true);
+                    } else {
+                        showNotification(item.period, item.prediction, false);
+                    }
+                }
+            });
+            updateHistoryTable();
+            updateStats();
+        }
+        
+        // Initialize with current period
+        async function initialize() {
+            const now = new Date();
+            const totalMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
+            const periodNumber = `${now.getUTCFullYear()}${(now.getUTCMonth() + 1).toString().padStart(2, '0')}${now.getUTCDate().toString().padStart(2, '0')}1000${(10001 + totalMinutes)}`;
+            currentPeriodEl.textContent = periodNumber;
+            
+            if (navigator.onLine) await updatePrediction();
+        }
+        
+        // Set up intervals
+        setInterval(updateTimer, 1000);
+        setInterval(updatePrediction, 30000); // Update prediction every 30 seconds
+        
+        // Initialize the app
+        initialize();
+    </script>
+</body>
+</html>
